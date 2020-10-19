@@ -1,10 +1,10 @@
 import { Ctx } from "blitz"
 import db, { FindManyCartArgs } from "db"
 
-type GetCartsInput = Pick<FindManyCartArgs, "where" | "orderBy" | "skip" | "take">
+type GetCartsInput = Pick<FindManyCartArgs, "where" | "orderBy" | "skip" | "take" | "include">
 
 export default async function getCarts(
-  { where, orderBy, skip = 0, take }: GetCartsInput,
+  { where, orderBy, skip = 0, take, include }: GetCartsInput,
   ctx: Ctx
 ) {
   ctx.session.authorize()
@@ -14,6 +14,7 @@ export default async function getCarts(
     orderBy,
     take,
     skip,
+    include
   })
 
   const count = await db.cart.count()

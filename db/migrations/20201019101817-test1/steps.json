@@ -1,0 +1,23 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "Product",
+      "field": "orderDetail",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "OrderDetail",
+      "field": "product",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "OrderDetail",
+      "field": "productId",
+      "arity": "Optional"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "DeleteField",
+      "model": "Product",
+      "field": "orderDetail"
+    },
+    {
+      "tag": "CreateField",
+      "model": "OrderDetail",
+      "field": "goodsId",
+      "type": "Int",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "OrderDetail",
+      "field": "product"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "OrderDetail",
+      "field": "productId"
+    }
+  ]
+}

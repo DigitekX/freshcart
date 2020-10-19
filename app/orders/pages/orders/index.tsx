@@ -1,60 +1,145 @@
-import React, { Suspense } from "react"
-import Layout from "app/layouts/Layout"
-import { Link, usePaginatedQuery, useRouter, BlitzPage } from "blitz"
-import getOrders from "app/orders/queries/getOrders"
+import deleteCart from 'app/carts/mutations/deleteCart'
+import getCarts from 'app/carts/queries/getCarts'
+import { useCurrentUser } from 'app/hooks/useCurrentUser'
+import createOrderDetail from 'app/orderDetails/mutations/createOrderDetail'
+import createOrder from 'app/orders/mutations/createOrder'
+import updateOrder from 'app/orders/mutations/updateOrder'
+import { BlitzPage, Link, Router, useMutation, useQuery, useSession } from 'blitz'
+import React, { Suspense } from 'react'
 
-const ITEMS_PER_PAGE = 100
+export const CartList = () => {
+  const user = useCurrentUser()
+ 
+  let amount:number = 0
+  
+  const [{carts}, {mutate}] =  useQuery(getCarts, {where: {userId: user?.id}, include:{product:true}})
+  const [createOrderMutation] = useMutation(createOrder)
+  const [createOrderDetailMutation] = useMutation(createOrderDetail)
+  const [updateOrderMutation] = useMutation(updateOrder)
+  const [deleteCartMutation] = useMutation(deleteCart)
+  
+  carts.length > 0 && carts.forEach(cart => amount += cart.productPrice )
+  
+  let orderDetails = []
+  let deleted = []
+  let i:number = 0
 
-export const OrdersList = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const [{ orders, hasMore }] = usePaginatedQuery(getOrders, {
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
+  const handleClick = async() => {
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+    try {
+      const order = await createOrderMutation({
+        data: {
+          user: {connect: {id: user?.id}},
+          totalPrice: amount
+        }
+      })
+
+      console.log(order)
+      oDetails(order)
+
+    } catch (error) {
+        console.log(error)      
+    }
+  }
+
+  const oDetails = async(order) => {
+      try {
+        
+      for(i; i<carts.length; i++){
+        orderDetails[i] = await createOrderDetailMutation({
+          data: {
+            order: {connect: {id: order.id}},
+            goodsId: carts[i].productId,
+            productPrice: carts[i].productPrice,
+            quantity: carts[i].quantity
+          }
+        })
+      }
+      console.log(orderDetails)
+
+      const updated = await updateOrderMutation({
+        where: {id: order.id},
+        data: {orderStatus: "PENDING"}
+      })
+
+      console.log(updated)
+      let j = 0
+      carts.forEach(async(cart) => {
+        deleted[j] = await deleteCartMutation({
+          where: {id: cart.id}
+        })
+        j++     
+      })
+      Router.push('/products')
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+  const removeFromCart = async(cart) => {
+      const removed = await deleteCartMutation({
+        where: {id: cart.id}
+      })
+      window.location.reload()
+  }
 
   return (
     <div>
-      <ul>
-        {orders.map((order) => (
-          <li key={order.id}>
-            <Link href="/orders/[orderId]" as={`/orders/${order.id}`}>
-              <a>{order.name}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {carts.length === 0 ? (
+        <>
+          <h3>Your cart is empty</h3>
+          <Link href='/products'>
+            <button>
+             <h4>Go to products</h4>
+            </button>
+          </Link>
+        </>
+      ) : (
+        <div>
 
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {carts.map(cart => (
+                  <tr key={cart.id}>
+                    <td>{cart.product.name}</td>
+                    <td>{cart.quantity}</td>
+                    <td>{cart.productPrice}</td>
+                    <td>
+                      <button onClick={() => removeFromCart(cart)}>Remove from cart</button>
+                    </td>
+                  </tr>
+                
+                ))}
+              </tbody>
+            </table>
+          <br/>
+          <br/>
+          <button onClick={handleClick}>Place Order</button>
+        </div>
+    )}
     </div>
   )
 }
+  
+const Orders:BlitzPage = () => {
+  
 
-const OrdersPage: BlitzPage = () => {
   return (
     <div>
-      <p>
-        <Link href="/orders/new">
-          <a>Create Order</a>
-        </Link>
-      </p>
+      <h1>Welcome to Orders</h1>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <OrdersList />
+        <CartList/>
       </Suspense>
     </div>
   )
 }
 
-OrdersPage.getLayout = (page) => <Layout title={"Orders"}>{page}</Layout>
-
-export default OrdersPage
+export default Orders
