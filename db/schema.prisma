@@ -65,10 +65,9 @@ model Product {
   price       Float      
   stock       Boolean    
   minQuantity Float?     
-  category    Category   @relation(fields: [catId], references:[id])
-  catId       Int 
+  category    Category?   @relation(fields: [catId], references:[id])
+  catId       Int? 
   cart        Cart?
-  orderDetail OrderDetail       
 }
 
 model Cart {
@@ -112,8 +111,7 @@ model OrderDetail {
   quantity  Float    
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   Int
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
+  goodsId   Int?
   productPrice Float    
 }
 
