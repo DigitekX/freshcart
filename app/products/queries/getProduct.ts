@@ -3,8 +3,7 @@ import db, { FindFirstProductArgs } from "db"
 
 type GetProductInput = Pick<FindFirstProductArgs, "where">
 
-export default async function getProduct({ where }: GetProductInput, ctx: Ctx) {
-  ctx.session.authorize()
+export default async function getProduct({ where }: GetProductInput, ) {
 
   const product = await db.product.findFirst({ where })
 

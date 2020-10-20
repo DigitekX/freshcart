@@ -5,9 +5,8 @@ type GetProductsInput = Pick<FindManyProductArgs, "where" | "orderBy" | "skip" |
 
 export default async function getProducts(
   { where, orderBy, skip = 0, take }: GetProductsInput,
-  ctx: Ctx
+  
 ) {
-  ctx.session.authorize()
 
   const products = await db.product.findMany({
     where,

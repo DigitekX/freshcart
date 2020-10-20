@@ -1,7 +1,8 @@
 import React, { Suspense } from "react"
 import Layout from "app/layouts/Layout"
-import { Link, usePaginatedQuery, useRouter, BlitzPage } from "blitz"
+import { Link, usePaginatedQuery, useRouter, BlitzPage, useSession } from "blitz"
 import getProducts from "app/products/queries/getProducts"
+import { useCurrentUser } from "app/hooks/useCurrentUser"
 
 const ITEMS_PER_PAGE = 100
 
@@ -13,11 +14,19 @@ export const ProductsList = () => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
+  const user = useSession()
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
     <div>
+      {user.roles[0]==='admin' && (
+        <p>
+          <Link href="/products/new">
+            <a>Create Product</a>
+          </Link>
+        </p>
+      )}
       <ul>
         {products.map((product) => (
           <li key={product.id}>
@@ -42,12 +51,7 @@ export const ProductsList = () => {
 const ProductsPage: BlitzPage = () => {
   return (
     <div>
-      <p>
-        <Link href="/products/new">
-          <a>Create Product</a>
-        </Link>
-      </p>
-
+      
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsList />
       </Suspense>
