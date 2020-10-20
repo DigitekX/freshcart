@@ -494,7 +494,8 @@ export declare const UserDistinctFieldEnum: {
   shopName: 'shopName',
   openingHrs: 'openingHrs',
   closingHrs: 'closingHrs',
-  orderAcceptTime: 'orderAcceptTime'
+  orderAcceptTime: 'orderAcceptTime',
+  verified: 'verified'
 };
 
 export declare type UserDistinctFieldEnum = (typeof UserDistinctFieldEnum)[keyof typeof UserDistinctFieldEnum]
@@ -536,6 +537,7 @@ export declare const ProductDistinctFieldEnum: {
   price: 'price',
   stock: 'stock',
   minQuantity: 'minQuantity',
+  measure: 'measure',
   catId: 'catId'
 };
 
@@ -597,12 +599,28 @@ export declare const TopSellingItemDistinctFieldEnum: {
 export declare type TopSellingItemDistinctFieldEnum = (typeof TopSellingItemDistinctFieldEnum)[keyof typeof TopSellingItemDistinctFieldEnum]
 
 
+export declare const Role: {
+  user: 'user',
+  admin: 'admin'
+};
+
+export declare type Role = (typeof Role)[keyof typeof Role]
+
+
 export declare const SortOrder: {
   asc: 'asc',
   desc: 'desc'
 };
 
 export declare type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export declare const Measure: {
+  perKg: 'perKg',
+  perItem: 'perItem'
+};
+
+export declare type Measure = (typeof Measure)[keyof typeof Measure]
 
 
 export declare const PayStatus: {
@@ -634,7 +652,7 @@ export type User = {
   name: string | null
   email: string
   hashedPassword: string | null
-  role: string
+  role: Role
   contactNo: string | null
   whatsapp: string | null
   address: string | null
@@ -642,6 +660,7 @@ export type User = {
   openingHrs: Date | null
   closingHrs: Date | null
   orderAcceptTime: Date | null
+  verified: boolean
 }
 
 
@@ -729,6 +748,7 @@ export type UserSelect = {
   cart?: boolean | FindManyCartArgs
   orders?: boolean | FindManyOrderArgs
   topItems?: boolean | FindManyTopSellingItemArgs
+  verified?: boolean
 }
 
 export type UserInclude = {
@@ -2264,6 +2284,7 @@ export type Product = {
   price: number
   stock: boolean
   minQuantity: number | null
+  measure: Measure | null
   catId: number | null
 }
 
@@ -2367,6 +2388,7 @@ export type ProductSelect = {
   price?: boolean
   stock?: boolean
   minQuantity?: boolean
+  measure?: boolean
   category?: boolean | CategoryArgs
   catId?: boolean
   cart?: boolean | CartArgs
@@ -5056,7 +5078,7 @@ export type UserWhereInput = {
   name?: StringNullableFilter | string | null
   email?: StringFilter | string
   hashedPassword?: StringNullableFilter | string | null
-  role?: StringFilter | string
+  role?: EnumRoleFilter | Role
   contactNo?: StringNullableFilter | string | null
   whatsapp?: StringNullableFilter | string | null
   address?: StringNullableFilter | string | null
@@ -5068,6 +5090,7 @@ export type UserWhereInput = {
   cart?: CartListRelationFilter
   orders?: OrderListRelationFilter
   topItems?: TopSellingItemListRelationFilter
+  verified?: BoolFilter | boolean
 }
 
 export type UserOrderByInput = {
@@ -5085,6 +5108,7 @@ export type UserOrderByInput = {
   openingHrs?: SortOrder
   closingHrs?: SortOrder
   orderAcceptTime?: SortOrder
+  verified?: SortOrder
 }
 
 export type UserWhereUniqueInput = {
@@ -5162,6 +5186,7 @@ export type ProductWhereInput = {
   price?: FloatFilter | number
   stock?: BoolFilter | boolean
   minQuantity?: FloatNullableFilter | number | null
+  measure?: EnumMeasureNullableFilter | Measure | null
   category?: CategoryRelationFilter | CategoryWhereInput | null
   catId?: IntNullableFilter | number | null
   cart?: CartRelationFilter | CartWhereInput | null
@@ -5177,6 +5202,7 @@ export type ProductOrderByInput = {
   price?: SortOrder
   stock?: SortOrder
   minQuantity?: SortOrder
+  measure?: SortOrder
   catId?: SortOrder
 }
 
@@ -5310,7 +5336,7 @@ export type UserCreateInput = {
   name?: string | null
   email: string
   hashedPassword?: string | null
-  role?: string
+  role?: Role
   contactNo?: string | null
   whatsapp?: string | null
   address?: string | null
@@ -5318,6 +5344,7 @@ export type UserCreateInput = {
   openingHrs?: Date | string | null
   closingHrs?: Date | string | null
   orderAcceptTime?: Date | string | null
+  verified?: boolean
   sessions?: SessionCreateManyWithoutUserInput
   cart?: CartCreateManyWithoutUserInput
   orders?: OrderCreateManyWithoutUserInput
@@ -5330,7 +5357,7 @@ export type UserUpdateInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -5338,6 +5365,7 @@ export type UserUpdateInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
   sessions?: SessionUpdateManyWithoutUserInput
   cart?: CartUpdateManyWithoutUserInput
   orders?: OrderUpdateManyWithoutUserInput
@@ -5350,7 +5378,7 @@ export type UserUpdateManyMutationInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -5358,6 +5386,7 @@ export type UserUpdateManyMutationInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
 }
 
 export type SessionCreateInput = {
@@ -5424,6 +5453,7 @@ export type ProductCreateInput = {
   price: number
   stock: boolean
   minQuantity?: number | null
+  measure?: Measure | null
   category?: CategoryCreateOneWithoutProductInput
   cart?: CartCreateOneWithoutProductInput
 }
@@ -5437,6 +5467,7 @@ export type ProductUpdateInput = {
   price?: number | FloatFieldUpdateOperationsInput
   stock?: boolean | BoolFieldUpdateOperationsInput
   minQuantity?: number | NullableFloatFieldUpdateOperationsInput | null
+  measure?: Measure | NullableEnumMeasureFieldUpdateOperationsInput | null
   category?: CategoryUpdateOneWithoutProductInput
   cart?: CartUpdateOneWithoutProductInput
 }
@@ -5450,6 +5481,7 @@ export type ProductUpdateManyMutationInput = {
   price?: number | FloatFieldUpdateOperationsInput
   stock?: boolean | BoolFieldUpdateOperationsInput
   minQuantity?: number | NullableFloatFieldUpdateOperationsInput | null
+  measure?: Measure | NullableEnumMeasureFieldUpdateOperationsInput | null
 }
 
 export type CartCreateInput = {
@@ -5616,6 +5648,13 @@ export type StringFilter = {
   not?: string | NestedStringFilter
 }
 
+export type EnumRoleFilter = {
+  equals?: Role
+  in?: Enumerable<Role>
+  notIn?: Enumerable<Role>
+  not?: Role | NestedEnumRoleFilter
+}
+
 export type DateTimeNullableFilter = {
   equals?: Date | string | null
   in?: Enumerable<Date> | Enumerable<string> | null
@@ -5651,6 +5690,11 @@ export type TopSellingItemListRelationFilter = {
   none?: TopSellingItemWhereInput
 }
 
+export type BoolFilter = {
+  equals?: boolean
+  not?: boolean | NestedBoolFilter
+}
+
 export type UserRelationFilter = {
   is?: UserWhereInput
   isNot?: UserWhereInput
@@ -5684,11 +5728,6 @@ export type FloatFilter = {
   not?: number | NestedFloatFilter
 }
 
-export type BoolFilter = {
-  equals?: boolean
-  not?: boolean | NestedBoolFilter
-}
-
 export type FloatNullableFilter = {
   equals?: number | null
   in?: Enumerable<number> | null
@@ -5698,6 +5737,13 @@ export type FloatNullableFilter = {
   gt?: number
   gte?: number
   not?: number | NestedFloatNullableFilter | null
+}
+
+export type EnumMeasureNullableFilter = {
+  equals?: Measure | null
+  in?: Enumerable<Measure> | null
+  notIn?: Enumerable<Measure> | null
+  not?: Measure | NestedEnumMeasureNullableFilter | null
 }
 
 export type CategoryRelationFilter = {
@@ -5772,8 +5818,16 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: Role
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type SessionUpdateManyWithoutUserInput = {
@@ -5869,12 +5923,12 @@ export type FloatFieldUpdateOperationsInput = {
   set?: number
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type NullableFloatFieldUpdateOperationsInput = {
   set?: number | null
+}
+
+export type NullableEnumMeasureFieldUpdateOperationsInput = {
+  set?: Measure | null
 }
 
 export type CategoryUpdateOneWithoutProductInput = {
@@ -6034,6 +6088,13 @@ export type NestedStringFilter = {
   not?: string | NestedStringFilter
 }
 
+export type NestedEnumRoleFilter = {
+  equals?: Role
+  in?: Enumerable<Role>
+  notIn?: Enumerable<Role>
+  not?: Role | NestedEnumRoleFilter
+}
+
 export type NestedDateTimeNullableFilter = {
   equals?: Date | string | null
   in?: Enumerable<Date> | Enumerable<string> | null
@@ -6043,6 +6104,11 @@ export type NestedDateTimeNullableFilter = {
   gt?: Date | string
   gte?: Date | string
   not?: Date | string | NestedDateTimeNullableFilter | null
+}
+
+export type NestedBoolFilter = {
+  equals?: boolean
+  not?: boolean | NestedBoolFilter
 }
 
 export type NestedIntNullableFilter = {
@@ -6067,11 +6133,6 @@ export type NestedFloatFilter = {
   not?: number | NestedFloatFilter
 }
 
-export type NestedBoolFilter = {
-  equals?: boolean
-  not?: boolean | NestedBoolFilter
-}
-
 export type NestedFloatNullableFilter = {
   equals?: number | null
   in?: Enumerable<number> | null
@@ -6081,6 +6142,13 @@ export type NestedFloatNullableFilter = {
   gt?: number
   gte?: number
   not?: number | NestedFloatNullableFilter | null
+}
+
+export type NestedEnumMeasureNullableFilter = {
+  equals?: Measure | null
+  in?: Enumerable<Measure> | null
+  notIn?: Enumerable<Measure> | null
+  not?: Measure | NestedEnumMeasureNullableFilter | null
 }
 
 export type NestedEnumPayStatusFilter = {
@@ -6264,7 +6332,7 @@ export type UserCreateWithoutSessionsInput = {
   name?: string | null
   email: string
   hashedPassword?: string | null
-  role?: string
+  role?: Role
   contactNo?: string | null
   whatsapp?: string | null
   address?: string | null
@@ -6272,6 +6340,7 @@ export type UserCreateWithoutSessionsInput = {
   openingHrs?: Date | string | null
   closingHrs?: Date | string | null
   orderAcceptTime?: Date | string | null
+  verified?: boolean
   cart?: CartCreateManyWithoutUserInput
   orders?: OrderCreateManyWithoutUserInput
   topItems?: TopSellingItemCreateManyWithoutUserInput
@@ -6283,7 +6352,7 @@ export type UserUpdateWithoutSessionsDataInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -6291,6 +6360,7 @@ export type UserUpdateWithoutSessionsDataInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
   cart?: CartUpdateManyWithoutUserInput
   orders?: OrderUpdateManyWithoutUserInput
   topItems?: TopSellingItemUpdateManyWithoutUserInput
@@ -6310,6 +6380,7 @@ export type ProductCreateWithoutCategoryInput = {
   price: number
   stock: boolean
   minQuantity?: number | null
+  measure?: Measure | null
   cart?: CartCreateOneWithoutProductInput
 }
 
@@ -6336,6 +6407,7 @@ export type ProductScalarWhereInput = {
   price?: FloatFilter | number
   stock?: BoolFilter | boolean
   minQuantity?: FloatNullableFilter | number | null
+  measure?: EnumMeasureNullableFilter | Measure | null
   catId?: IntNullableFilter | number | null
 }
 
@@ -6392,6 +6464,7 @@ export type ProductCreateWithoutCartInput = {
   price: number
   stock: boolean
   minQuantity?: number | null
+  measure?: Measure | null
   category?: CategoryCreateOneWithoutProductInput
 }
 
@@ -6401,7 +6474,7 @@ export type UserCreateWithoutCartInput = {
   name?: string | null
   email: string
   hashedPassword?: string | null
-  role?: string
+  role?: Role
   contactNo?: string | null
   whatsapp?: string | null
   address?: string | null
@@ -6409,6 +6482,7 @@ export type UserCreateWithoutCartInput = {
   openingHrs?: Date | string | null
   closingHrs?: Date | string | null
   orderAcceptTime?: Date | string | null
+  verified?: boolean
   sessions?: SessionCreateManyWithoutUserInput
   orders?: OrderCreateManyWithoutUserInput
   topItems?: TopSellingItemCreateManyWithoutUserInput
@@ -6423,6 +6497,7 @@ export type ProductUpdateWithoutCartDataInput = {
   price?: number | FloatFieldUpdateOperationsInput
   stock?: boolean | BoolFieldUpdateOperationsInput
   minQuantity?: number | NullableFloatFieldUpdateOperationsInput | null
+  measure?: Measure | NullableEnumMeasureFieldUpdateOperationsInput | null
   category?: CategoryUpdateOneWithoutProductInput
 }
 
@@ -6437,7 +6512,7 @@ export type UserUpdateWithoutCartDataInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -6445,6 +6520,7 @@ export type UserUpdateWithoutCartDataInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
   sessions?: SessionUpdateManyWithoutUserInput
   orders?: OrderUpdateManyWithoutUserInput
   topItems?: TopSellingItemUpdateManyWithoutUserInput
@@ -6461,7 +6537,7 @@ export type UserCreateWithoutOrdersInput = {
   name?: string | null
   email: string
   hashedPassword?: string | null
-  role?: string
+  role?: Role
   contactNo?: string | null
   whatsapp?: string | null
   address?: string | null
@@ -6469,6 +6545,7 @@ export type UserCreateWithoutOrdersInput = {
   openingHrs?: Date | string | null
   closingHrs?: Date | string | null
   orderAcceptTime?: Date | string | null
+  verified?: boolean
   sessions?: SessionCreateManyWithoutUserInput
   cart?: CartCreateManyWithoutUserInput
   topItems?: TopSellingItemCreateManyWithoutUserInput
@@ -6488,7 +6565,7 @@ export type UserUpdateWithoutOrdersDataInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -6496,6 +6573,7 @@ export type UserUpdateWithoutOrdersDataInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
   sessions?: SessionUpdateManyWithoutUserInput
   cart?: CartUpdateManyWithoutUserInput
   topItems?: TopSellingItemUpdateManyWithoutUserInput
@@ -6572,7 +6650,7 @@ export type UserCreateWithoutTopItemsInput = {
   name?: string | null
   email: string
   hashedPassword?: string | null
-  role?: string
+  role?: Role
   contactNo?: string | null
   whatsapp?: string | null
   address?: string | null
@@ -6580,6 +6658,7 @@ export type UserCreateWithoutTopItemsInput = {
   openingHrs?: Date | string | null
   closingHrs?: Date | string | null
   orderAcceptTime?: Date | string | null
+  verified?: boolean
   sessions?: SessionCreateManyWithoutUserInput
   cart?: CartCreateManyWithoutUserInput
   orders?: OrderCreateManyWithoutUserInput
@@ -6591,7 +6670,7 @@ export type UserUpdateWithoutTopItemsDataInput = {
   name?: string | NullableStringFieldUpdateOperationsInput | null
   email?: string | StringFieldUpdateOperationsInput
   hashedPassword?: string | NullableStringFieldUpdateOperationsInput | null
-  role?: string | StringFieldUpdateOperationsInput
+  role?: Role | EnumRoleFieldUpdateOperationsInput
   contactNo?: string | NullableStringFieldUpdateOperationsInput | null
   whatsapp?: string | NullableStringFieldUpdateOperationsInput | null
   address?: string | NullableStringFieldUpdateOperationsInput | null
@@ -6599,6 +6678,7 @@ export type UserUpdateWithoutTopItemsDataInput = {
   openingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   closingHrs?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
   orderAcceptTime?: Date | string | NullableDateTimeFieldUpdateOperationsInput | null
+  verified?: boolean | BoolFieldUpdateOperationsInput
   sessions?: SessionUpdateManyWithoutUserInput
   cart?: CartUpdateManyWithoutUserInput
   orders?: OrderUpdateManyWithoutUserInput
@@ -6694,6 +6774,7 @@ export type ProductUpdateWithoutCategoryDataInput = {
   price?: number | FloatFieldUpdateOperationsInput
   stock?: boolean | BoolFieldUpdateOperationsInput
   minQuantity?: number | NullableFloatFieldUpdateOperationsInput | null
+  measure?: Measure | NullableEnumMeasureFieldUpdateOperationsInput | null
   cart?: CartUpdateOneWithoutProductInput
 }
 
@@ -6706,6 +6787,7 @@ export type ProductUpdateManyDataInput = {
   price?: number | FloatFieldUpdateOperationsInput
   stock?: boolean | BoolFieldUpdateOperationsInput
   minQuantity?: number | NullableFloatFieldUpdateOperationsInput | null
+  measure?: Measure | NullableEnumMeasureFieldUpdateOperationsInput | null
 }
 
 export type OrderDetailUpdateWithoutOrderDataInput = {

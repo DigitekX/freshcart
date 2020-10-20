@@ -4,9 +4,10 @@ import { Link, useRouter, useQuery, useParam, BlitzPage, useMutation, useSession
 import getProduct from "app/products/queries/getProduct"
 import deleteProduct from "app/products/mutations/deleteProduct"
 import createCart from "app/carts/mutations/createCart"
-import { number } from "zod"
+import { useCurrentUser } from "app/hooks/useCurrentUser"
 
-export const Product = () => {
+export const Product =  () => {
+  const user =  useCurrentUser()
   const userId = useSession().userId
   const router = useRouter()
   const productId = useParam("productId", "number")
@@ -38,35 +39,49 @@ export const Product = () => {
       <h1>Product {product.id}</h1>
       <pre>{JSON.stringify(product, null, 2)}</pre>
 
-      <Link href="/products/[productId]/edit" as={`/products/${product.id}/edit`}>
-        <a>Edit</a>
-      </Link>
+      {useSession().roles[0] ==='admin' &&(
+        <div>
+          <Link href="/products/[productId]/edit" as={`/products/${product.id}/edit`}>
+            <a>Edit</a>
+          </Link>
 
-      <button
-        type="button"
-        onClick={async () => {
-          if (window.confirm("This will be deleted")) {
-            await deleteProduct({ where: { id: product.id } })
-            router.push("/products")
-          }
-        }}
-      >
-        Delete
-      </button>
-      <button 
-       disabled={quantity <= product.minQuantity && true}
-       onClick={() => setQuantity(quantity - 1)}
-      >
-        -
-      </button>
-      {quantity}
-      <button
-       onClick={() => setQuantity(quantity + 1)}
-       disabled={quantity >= 10 && true}
-      >
-        +
-      </button>
-      <button onClick={() => handleClick(quantity)}>Add to Cart</button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (window.confirm("This will be deleted")) {
+                await deleteProduct({ where: { id: product.id } })
+                router.push("/products")
+              }
+            }}
+          >
+          Delete
+          </button>
+
+        </div>
+      )}
+      {user?.verified===true && (
+        <div>
+
+          <button 
+          disabled={quantity <= product.minQuantity && true}
+          onClick={() => setQuantity(quantity - 0.25)}
+          >
+            -
+          </button>
+          {quantity}
+          <button
+          onClick={() => setQuantity(quantity + 0.25)}
+          disabled={quantity >= 10 && true}
+          >
+            +
+          </button>
+          <button onClick={() => handleClick(quantity)}>Add to Cart</button>
+          <br/>
+          <button onClick={() => router.push('/orders')}>
+            My Cart
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -84,11 +99,7 @@ const ShowProductPage: BlitzPage = () => {
         <Product />
       </Suspense>
 
-      <button>
-        <Link href='/orders'>
-          <a>My Cart</a>
-        </Link>
-      </button>
+      
     </div>
   )
 }
